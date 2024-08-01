@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
-		"allowJs": true,
+    "allowJs": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "outDir": "./build" // Add this line
   },
-	"include": ["src/**/*"],
-	"exclude": [
-		"./src/**/*.mjs",
-		"node_modules",
-		"./build",
-		"test"
-	]
+  "include": ["src/**/*"],
+  "exclude": ["./src/**/*.mjs", "node_modules", "./build", "test"]
 }

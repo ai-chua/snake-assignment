@@ -11,9 +11,9 @@ app.get('/new', startNewGame)
 app.post('/validate', validateCurrentGame)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(405).send({ error: 'Method Not Allowed' });
-});
+  res.status(405).send({ error: 'Method Not Allowed' })
+})
 
 app.listen(PORT, () => {
-    console.log(`Snake server up on port ${PORT}`)
+  console.log(`Snake server up on port ${PORT}`)
 })

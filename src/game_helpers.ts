@@ -1,9 +1,16 @@
-import { DEFAULT_STARTING_POSITION } from "./consts";
-import { GameState, ValidateCurrentSessionResponse, ValidateParams } from "./types"
+import { DEFAULT_STARTING_POSITION } from './consts'
+import {
+  GameState,
+  ValidateCurrentSessionResponse,
+  ValidateParams,
+} from './types'
 
 // types of inputs should already be correct, checked at api and returned appropriate response
-export function generateNewGameState({ width, height }: {
-  width: number,
+export function generateNewGameState({
+  width,
+  height,
+}: {
+  width: number
   height: number
 }): GameState {
   // must be at least 2x2 to be able to make single unit move along either X or Y axis
@@ -20,7 +27,7 @@ export function generateNewGameState({ width, height }: {
       y: Math.floor(Math.random() * height),
     },
     score: 0,
-  };
+  }
 }
 
 export function validateTick({
@@ -32,18 +39,18 @@ export function validateTick({
   previousPositionY,
   previousVelX,
   previousVelY,
-} : {
-  width: number;
-  height: number;
-  velX: number;
-  velY: number;
-  previousPositionX: number;
-  previousPositionY: number;
-  previousVelX: number;
-  previousVelY: number;
-}) : {
-  movement: boolean;
-  withinBoundaries: boolean;
+}: {
+  width: number
+  height: number
+  velX: number
+  velY: number
+  previousPositionX: number
+  previousPositionY: number
+  previousVelX: number
+  previousVelY: number
+}): {
+  movement: boolean
+  withinBoundaries: boolean
 } {
   // Check if the movement is valid:
   // 1. The snake must only move along one axis per tick (either x or y, but not both).
@@ -54,41 +61,38 @@ export function validateTick({
   const movedAlongY = velX === 0 && (velY === 1 || velY === -1)
 
   // Check if the new movement is reversing the previous movement
-  const isReversing = (velX === -previousVelX && velY === -previousVelY);
+  const isReversing = velX === -previousVelX && velY === -previousVelY
 
-  const isValidMovement = !noMovement && !isReversing && (movedAlongY || movedAlongX)
+  const isValidMovement =
+    !noMovement && !isReversing && (movedAlongY || movedAlongX)
 
   // Calculate the new position
   const newPositionX = previousPositionX + velX
   const newPositionY = previousPositionY + velY
 
   // Check if the new position is within the game boundaries
-  const isWithinBoundaries = (
-    newPositionX >= 0 && newPositionX <= width &&
-    newPositionY >= 0 && newPositionY <= height
-  )
+  const isWithinBoundaries =
+    newPositionX >= 0 &&
+    newPositionX <= width &&
+    newPositionY >= 0 &&
+    newPositionY <= height
 
   return {
     movement: isValidMovement,
-    withinBoundaries: isWithinBoundaries
+    withinBoundaries: isWithinBoundaries,
   }
 }
 
-export function validateCurrentSession(gameState: ValidateParams): ValidateCurrentSessionResponse
-{
+export function validateCurrentSession(
+  gameState: ValidateParams,
+): ValidateCurrentSessionResponse {
   const {
     ticks,
     height,
     width,
     score,
-    snake: {
-      x: lastSnakePosX,
-      y: lastSnakePosY
-    },
-    fruit: {
-      x: fruitPositionX,
-      y: fruitPositionY
-    }
+    snake: { x: lastSnakePosX, y: lastSnakePosY },
+    fruit: { x: fruitPositionX, y: fruitPositionY },
   } = gameState
 
   let currentSnakePositionX = lastSnakePosX
@@ -96,7 +100,7 @@ export function validateCurrentSession(gameState: ValidateParams): ValidateCurre
 
   const validateTickResult = {
     withinBoundaries: true,
-    movement: true
+    movement: true,
   }
 
   for (let i = 0; i < ticks.length; i++) {
@@ -104,7 +108,7 @@ export function validateCurrentSession(gameState: ValidateParams): ValidateCurre
     // assumption no 2, please find on README
     const previousVelX = i === 0 ? 0 : ticks[i - 1].velY
     const previousVelY = i === 0 ? 0 : ticks[i - 1].velY
-    
+
     const outcome = validateTick({
       width,
       height,
@@ -113,11 +117,11 @@ export function validateCurrentSession(gameState: ValidateParams): ValidateCurre
       previousPositionX: currentSnakePositionX,
       previousPositionY: currentSnakePositionY,
       previousVelX,
-      previousVelY
+      previousVelY,
     })
 
-    const attrs = ["withinBoundaries", "movement"]
-    
+    const attrs = ['withinBoundaries', 'movement']
+
     attrs.forEach((attr) => {
       // if previous result is true, but outcome is false
       if (validateTickResult[attr] && !outcome[attr]) {
@@ -135,28 +139,28 @@ export function validateCurrentSession(gameState: ValidateParams): ValidateCurre
 
   const updatedSnakePos = {
     x: currentSnakePositionX,
-    y: currentSnakePositionY
+    y: currentSnakePositionY,
   }
 
   console.log('updatedSnakePos', JSON.stringify(updatedSnakePos, null, 2))
 
   const { movement, withinBoundaries } = validateTickResult
   const isGamePlayValid = withinBoundaries && movement
-  
+
   if (isGamePlayValid && caughtFruit) {
     return {
       canContinue: true,
       updatedScore: score + 1,
-      updatedSnakePos
+      updatedSnakePos,
     }
   }
 
-  // all ok, just no fruit 
+  // all ok, just no fruit
   if (isGamePlayValid) {
     return {
       canContinue: false,
       updatedScore: score,
-      updatedSnakePos
+      updatedSnakePos,
     }
   }
 
@@ -164,6 +168,6 @@ export function validateCurrentSession(gameState: ValidateParams): ValidateCurre
   return {
     canContinue: false,
     updatedScore: score,
-    updatedSnakePos
+    updatedSnakePos,
   }
 }

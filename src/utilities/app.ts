@@ -1,5 +1,5 @@
 import cors, { CorsRequest } from 'cors'
-import express, { urlencoded,  Application } from 'express'
+import express, { urlencoded, Application } from 'express'
 import { json } from 'body-parser'
 
 export const appFactory = (): Application => {
