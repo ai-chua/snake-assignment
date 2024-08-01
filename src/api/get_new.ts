@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { v4 as uuid } from 'uuid';
+
 import { generateNewGameState } from "../game_helpers";
 
 export function startNewGame(req: Request, res: Response): Response {
@@ -17,11 +19,15 @@ export function startNewGame(req: Request, res: Response): Response {
     const width = parseInt(w, 10)
     const height = parseInt(h, 10)
 
-    generateNewGameState({ width, height })
+    const newGame = generateNewGameState({ width, height })
+    const gameId = uuid()
     
     return res
       .status(200)
-      .json(generateNewGameState({ width, height }))
+      .json({
+        ...newGame,
+        gameId
+      })
 
   } catch (error) {
     // catch expected errors

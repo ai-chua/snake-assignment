@@ -11,6 +11,10 @@ export interface State {
   };
   score: number;
 }
+
+export type NewGameState = State & {
+  gameId: string
+}
 export interface Tick {
   velX: number;
   velY: number;
