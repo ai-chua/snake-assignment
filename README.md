@@ -15,8 +15,8 @@ REDIS_HOST=localhost
 ```
 
 Scripts
-`npm run dev`: start local development environment
-`npm run start`: build and start production build
+- `npm run dev`: start local development environment
+- `npm run start`: build and start production build
 
 To start locally: `npm i && npm run dev`
 
