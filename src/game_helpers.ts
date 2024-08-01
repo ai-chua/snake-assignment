@@ -1,13 +1,11 @@
 import { DEFAULT_STARTING_POSITION } from "./consts";
 import { State } from "./types"
 
+// types of inputs should already be correct, checked at api and returned appropriate response
 export function generateNewGameState({ width, height }: {
-  width: number | null | undefined,
-  height: number | null | undefined
+  width: number,
+  height: number
 }): State {
-  if (typeof width !== 'number' || typeof height !== 'number') {
-    throw new Error('Invalid input provided')
-  }
 
   if (width === 1 && height === 1) {
     throw new Error('Invalid game board dimension')

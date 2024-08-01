@@ -11,7 +11,6 @@ export interface State {
   };
   score: number;
 }
-
 export interface Tick {
   velX: number;
   velY: number;

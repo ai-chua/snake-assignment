@@ -5,19 +5,7 @@ import { DEFAULT_STARTING_POSITION } from "../src/consts"
 
 const { expect } = chai
 
-describe.only("generateNewGameState unit test", () => {
-  it("should throw when provided invalid-typed inputs", () => {
-     // null input
-    expect(
-      () => generateNewGameState({ width: null, height: 5 })
-    ).to.throw('Invalid input provided')
-
-    //string input
-    expect(
-      () => generateNewGameState({ width: 5, height: null })
-    ).to.throw('Invalid input provided')
-  })
-
+describe("generateNewGameState unit test", () => {
   it('should throw when both provided input(s) are smaller than 2', () => {
     expect(
       () => generateNewGameState({ width: 1, height: 1})

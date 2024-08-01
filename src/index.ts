@@ -1,16 +1,12 @@
-import cors, { CorsRequest } from 'cors'
-import express, { urlencoded,  Application } from 'express'
-import { json } from 'body-parser'
+import { Application } from 'express'
+import { startNewGame } from './api/get_new'
+import { appFactory } from './app'
+import { PORT } from './consts'
 
-const PORT = process.env.PORT || 3000
+const app: Application = appFactory()
 
-const app: Application = express()
-
-app.use(cors<CorsRequest>())
-app.options('*', cors<CorsRequest>())
-app.use(urlencoded({ extended: true }))
-app.use(json())
+app.get('/new', startNewGame)
 
 app.listen(PORT, () => {
-  console.log(`Snake server up on port ${PORT}`)
+    console.log(`Snake server up on port ${PORT}`)
 })

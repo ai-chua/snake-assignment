@@ -9,6 +9,5 @@ module.exports = {
     extension: ["js", "ts"],
     reporter: 'spec',
     recursive: true,
-    'trace-warnings': true, // node flags ok
     ui: 'bdd',
 }
