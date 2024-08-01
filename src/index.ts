@@ -8,7 +8,6 @@ const app: Application = express()
 
 app.use(cors<CorsRequest>())
 app.options('*', cors<CorsRequest>())
-
 app.use(urlencoded({ extended: true }))
 app.use(json())
 
