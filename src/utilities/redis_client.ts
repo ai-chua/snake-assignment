@@ -5,6 +5,10 @@ const redisInstance = new Redis({
   host: process.env.REDIS_HOST
 })
 
+redisInstance.on("connect", () => {
+  console.log('Connected to redis!')
+})
+
 export const getRedisInstance = () => {
   return redisInstance
 }

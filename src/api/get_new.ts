@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { v4 as uuid } from 'uuid';
 
 import { generateNewGameState } from "../game_helpers";
+import { getRedisInstance } from "../utilities/redis_client";
 
-export function startNewGame(req: Request, res: Response): Response {
+export async function startNewGame(req: Request, res: Response): Promise<Response> {
   try {
     const { w , h } = req.query
   
@@ -21,13 +22,15 @@ export function startNewGame(req: Request, res: Response): Response {
 
     const newGame = generateNewGameState({ width, height })
     const gameId = uuid()
-    
-    return res
-      .status(200)
-      .json({
+    const payload = {
         ...newGame,
         gameId
-      })
+      }
+
+    // let the catch handle the error first
+    await getRedisInstance().set(gameId, JSON.stringify(payload))
+    
+    return res.status(200).json(payload)
 
   } catch (error) {
     // catch expected errors
