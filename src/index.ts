@@ -1,6 +1,6 @@
 import { Application } from 'express'
 import { startNewGame } from './api/get_new'
-import { appFactory } from './app'
+import { appFactory } from './utilities/app'
 import { PORT } from './consts'
 
 const app: Application = appFactory()

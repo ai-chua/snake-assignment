@@ -1,5 +1,5 @@
 import { Application } from 'express'
-import { appFactory } from '../../src/app'
+import { appFactory } from '../../src/utilities/app'
 import request from 'supertest'
 
 import { startNewGame } from '../../src/api/get_new'
