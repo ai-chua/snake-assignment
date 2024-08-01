@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch ./src/index.ts --clear-screen",
+    "start": "npm run build && PORT=3001 node ./build/index.js",
     "test": "nyc --reporter=text mocha --import=tsx"
   },
   "author": "",

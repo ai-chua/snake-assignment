@@ -1,6 +1,6 @@
 import * as chai from "chai"
 import { generateNewGameState, validateCurrentSession, validateTick } from "../src/game_helpers"
-import { State } from "../src/types"
+import { GameState, State } from "../src/types"
 import { DEFAULT_STARTING_POSITION } from "../src/consts"
 
 const { expect } = chai
@@ -16,7 +16,7 @@ describe("generateNewGameState unit test", () => {
     const width = 3
     const height = 4
 
-    const output: State = generateNewGameState({ width, height })
+    const output: GameState = generateNewGameState({ width, height })
 
     expect(output).to.have.property('width', width).that.is.a('number')
     expect(output).to.have.property('height', height).that.is.a('number')
@@ -47,7 +47,9 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 1, 
       velY: 1, 
       previousPositionX: 5, 
-      previousPositionY: 5 
+      previousPositionY: 5,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
     // Moves more than one unit
@@ -57,11 +59,36 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 2, 
       velY: 0, 
       previousPositionX: 5, 
-      previousPositionY: 5
+      previousPositionY: 5,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
-    expect(res1).to.deep.equal(false)
-    expect(res2).to.deep.equal(false)
+    // Reversed last move
+    const res3 = validateTick({ 
+      width: 10, 
+      height: 10, 
+      velX: 1, 
+      velY: 0, 
+      previousPositionX: 5, 
+      previousPositionY: 5,
+      previousVelX: -1,
+      previousVelY: 0
+    })
+
+
+    expect(res1).to.deep.equal({
+      movement: false,
+      withinBoundaries: true
+    })
+    expect(res2).to.deep.equal({
+      movement: false,
+      withinBoundaries: true
+    })
+    expect(res3).to.deep.equal({
+      movement: false,
+      withinBoundaries: true
+    })
   })
 
   // Check if the new position is within the game boundaries
@@ -73,7 +100,9 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 1,
       velY: 0,
       previousPositionX: 10,
-      previousPositionY: 5
+      previousPositionY: 5,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
     // Moves out of bounds on Y axis
@@ -83,11 +112,19 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 0,
       velY: 1,
       previousPositionX: 5,
-      previousPositionY: 10
+      previousPositionY: 10,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
-    expect(res1).to.deep.equal(false)
-    expect(res2).to.deep.equal(false)
+    expect(res1).to.deep.equal({
+      movement: true,
+      withinBoundaries: false
+    })
+    expect(res2).to.deep.equal({
+      movement: true,
+      withinBoundaries: false
+    })
   })
 
   // Both invalid, lol
@@ -98,10 +135,15 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 1, 
       velY: 1, 
       previousPositionX: 3, 
-      previousPositionY: 4 
+      previousPositionY: 4,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
-    expect(res1).to.deep.equal(false)
+    expect(res1).to.deep.equal({
+      movement: false,
+      withinBoundaries: false
+    })
   })
 
   it("Should return true: Both conditions met", () => {
@@ -112,7 +154,9 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 1, 
       velY: 0, 
       previousPositionX: 5, 
-      previousPositionY: 5
+      previousPositionY: 5,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
     // Valid move upward within bounds
@@ -122,16 +166,24 @@ describe("validateTick unit test: for  direction and velocity", () => {
       velX: 0,
       velY: -1,
       previousPositionX: 5,
-      previousPositionY: 5
+      previousPositionY: 5,
+      previousVelX: 1,
+      previousVelY: 0
     })
 
-    expect(res1).to.deep.equal(true)
-    expect(res2).to.deep.equal(true)
+    expect(res1).to.deep.equal({
+      movement: true,
+      withinBoundaries: true
+    })
+    expect(res2).to.deep.equal({
+      movement: true,
+      withinBoundaries: true
+    })
   })
 })
 
 describe('validateCurrentSession unit test', () => {
-  it("should return valid=false: valid movement, out of bound", () => {
+  it("should return continue=false: valid movement, out of bound", () => {
     const gameState = {
       ticks: [
         { velX: 1, velY: 0 }, // Moves the snake right x4,y0
@@ -148,8 +200,9 @@ describe('validateCurrentSession unit test', () => {
     }
 
     const result = validateCurrentSession(gameState)
-    expect(result.valid).to.deep.equal(false)
+    expect(result.canContinue).to.deep.equal(false)
     expect(result.updatedScore).to.deep.equal(3)
+    expect(result.updatedSnakePos).to.deep.equal({ x: 4, y: -1 })
   })
 
   it("should return valid=false: invalid movement, within boundary", () => {
@@ -169,8 +222,9 @@ describe('validateCurrentSession unit test', () => {
 
     const res1 = validateCurrentSession(gameState1)
 
-    expect(res1.valid).to.deep.equal(false)
+    expect(res1.canContinue).to.deep.equal(false)
     expect(res1.updatedScore).to.deep.equal(0)
+    expect(res1.updatedSnakePos).to.deep.equal({ x: 2, y: 0 })
 
     const gameState2 = {
       ticks: [
@@ -188,8 +242,9 @@ describe('validateCurrentSession unit test', () => {
 
     const res2 = validateCurrentSession(gameState2)
 
-    expect(res2.valid).to.deep.equal(false)
+    expect(res2.canContinue).to.deep.equal(false)
     expect(res2.updatedScore).to.deep.equal(5)
+    expect(res2.updatedSnakePos).to.deep.equal({ x: 4, y: 4 })
 
     const gameState3 = {
       ticks: [
@@ -207,11 +262,12 @@ describe('validateCurrentSession unit test', () => {
 
     const res3 = validateCurrentSession(gameState3)
 
-    expect(res3.valid).to.deep.equal(false)
+    expect(res3.canContinue).to.deep.equal(false)
     expect(res3.updatedScore).to.deep.equal(4)
+    expect(res3.updatedSnakePos).to.deep.equal({ x: 5, y: 3 })
   })
 
-  it("should return valid=true: valid movement, within boundary", () => {
+  it("should return valid=true: valid movement, within boundary, caught fruit", () => {
     const gameState = {
       ticks: [
         { velX: 1, velY: 0 }, // Moves the snake right
@@ -235,7 +291,8 @@ describe('validateCurrentSession unit test', () => {
 
     const res = validateCurrentSession(gameState)
 
-    expect(res.valid).to.be.true;
-    expect(res.updatedScore).to.equal(1) 
+    expect(res.canContinue).to.deep.equal(true);
+    expect(res.updatedScore).to.equal(1)
+    expect(res.updatedSnakePos).to.deep.equal({ x: 6, y: 4 })
   })
 })

@@ -5,4 +5,5 @@ export const DEFAULT_STARTING_POSITION = {
   y: 0
 }
 
-export const VALID_VELOCITY = [-1, 0, 1]
+export const SECOND_IN_MS = 1
+export const MIN_IN_MS = SECOND_IN_MS * 60

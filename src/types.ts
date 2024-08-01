@@ -1,4 +1,4 @@
-export interface State {
+export interface GameState {
   width: number;
   height: number;
   snake: {
@@ -12,7 +12,7 @@ export interface State {
   score: number;
 }
 
-export type NewGameState = State & {
+export type State = GameState & {
   gameId: string
 }
 export interface Tick {
@@ -20,7 +20,7 @@ export interface Tick {
   velY: number;
 }
 
-export type ValidateParams = NewGameState & {
+export type ValidateParams = State & {
   ticks: Tick[]
 } 
 
@@ -30,6 +30,10 @@ export type Snake = {
 } & Tick
 
 export interface ValidateCurrentSessionResponse {
-  valid: boolean;
+  canContinue: boolean;
   updatedScore: number;
+  updatedSnakePos: {
+    x: number,
+    y: number
+  }
 }

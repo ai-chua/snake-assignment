@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
 		"allowJs": true,
-    "noEmit": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler"
-		// Allow JS files to be imported from TS and vice versa
+    "moduleResolution": "Bundler",
+    "outDir": "./build" // Add this line
   },
 	"include": ["src/**/*"],
 	"exclude": [
